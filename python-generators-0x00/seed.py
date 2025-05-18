@@ -1,20 +1,19 @@
 #!/usr/bin/python3
 import mysql.connector
-import csv
-import uuid
 
-def connect_db():
-    """Connect to MySQL server (without selecting database)."""
+def connect_to_prodev():
     try:
         connection = mysql.connector.connect(
             host="localhost",
-            user="root",
-            password=""
+            user="alxuser",         # your new username
+            password="your_password",  # your new password
+            database="alx_prodev"
         )
         return connection
     except mysql.connector.Error as err:
-        print(f"Error connecting to MySQL: {err}")
+        print(f"Error connecting to ALX_prodev: {err}")
         return None
+
 
 def create_database(connection):
     """Create ALX_prodev database if it does not exist."""
