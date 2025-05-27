@@ -21,16 +21,10 @@ __all__ = [
 
 
 def access_nested_map(nested_map: Mapping, path: Sequence) -> Any:
-    """Access a value in a nested map by following a sequence of keys.
-
-    Args:
-        nested_map (Mapping): A nested map.
-        path (Sequence): A sequence of keys representing a path to the value.
-
-    Returns:
-        Any: The value located at the end of the path.
-    """
+    """Access nested map with key path."""
     for key in path:
+        if not isinstance(nested_map, Mapping):
+            raise KeyError(key)
         nested_map = nested_map[key]
     return nested_map
 
