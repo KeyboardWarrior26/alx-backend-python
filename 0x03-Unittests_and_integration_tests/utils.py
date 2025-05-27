@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generic utilities for github org client.
 """
+
 import requests
 from functools import wraps
 from typing import (
@@ -11,6 +12,7 @@ from typing import (
     Callable,
 )
 
+
 __all__ = [
     "access_nested_map",
     "get_json",
@@ -19,57 +21,49 @@ __all__ = [
 
 
 def access_nested_map(nested_map: Mapping, path: Sequence) -> Any:
-    """Access nested map with key path.
-    Parameters
-    ----------
-    nested_map: Mapping
-        A nested map
-    path: Sequence
-        a sequence of key representing a path to the value
-    Example
-    -------
-    >>> nested_map = {"a": {"b": {"c": 1}}}
-    >>> access_nested_map(nested_map, ["a", "b", "c"])
-    1
+    """Access a value in a nested map by following a sequence of keys.
+
+    Args:
+        nested_map (Mapping): A nested map.
+        path (Sequence): A sequence of keys representing a path to the value.
+
+    Returns:
+        Any: The value located at the end of the path.
     """
     for key in path:
-        if not isinstance(nested_map, Mapping):
-            raise KeyError(key)
         nested_map = nested_map[key]
-
     return nested_map
 
 
 def get_json(url: str) -> Dict:
-    """Get JSON from remote URL.
+    """Return the JSON content of a given URL.
+
+    Args:
+        url (str): The URL to fetch JSON from.
+
+    Returns:
+        Dict: The parsed JSON response.
     """
     response = requests.get(url)
     return response.json()
 
 
-def memoize(fn: Callable) -> Callable:
-    """Decorator to memoize a method.
-    Example
-    -------
-    class MyClass:
-        @memoize
-        def a_method(self):
-            print("a_method called")
-            return 42
-    >>> my_object = MyClass()
-    >>> my_object.a_method
-    a_method called
-    42
-    >>> my_object.a_method
-    42
-    """
-    attr_name = "_{}".format(fn.__name__)
+def memoize(method: Callable) -> Callable:
+    """Decorator to memoize a method's return value.
 
-    @wraps(fn)
-    def memoized(self):
-        """"memoized wraps"""
+    Args:
+        method (Callable): The method to be memoized.
+
+    Returns:
+        Callable: The wrapped method with memoization.
+    """
+    attr_name = f"_memoized_{method.__name__}"
+
+    @wraps(method)
+    def wrapper(self):
         if not hasattr(self, attr_name):
-            setattr(self, attr_name, fn(self))
+            setattr(self, attr_name, method(self))
         return getattr(self, attr_name)
 
-    return property(memoized)
+    return wrapper
+
