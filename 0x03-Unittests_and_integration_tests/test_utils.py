@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""
-Unit tests for utils module.
-"""
+"""Unit tests for utils.py"""
 
-from unittest import TestCase
+import unittest
+from parameterized import parameterized
 from unittest.mock import patch
-from utils import memoize
+from utils import access_nested_map, get_json, memoize
 
 
 class TestAccessNestedMap(unittest.TestCase):
