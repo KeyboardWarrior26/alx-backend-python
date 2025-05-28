@@ -42,17 +42,11 @@ def get_json(url: str) -> Dict:
     return response.json()
 
 
-def memoize(method: Callable) -> Callable:
-    """Decorator to memoize a method's return value.
+def memoize(method):
+    """Decorator that caches a method's output."""
+    attr_name = "_{}".format(method.__name__)
 
-    Args:
-        method (Callable): The method to be memoized.
-
-    Returns:
-        Callable: The wrapped method with memoization.
-    """
-    attr_name = f"_memoized_{method.__name__}"
-
+    @property
     @wraps(method)
     def wrapper(self):
         if not hasattr(self, attr_name):
@@ -60,7 +54,3 @@ def memoize(method: Callable) -> Callable:
         return getattr(self, attr_name)
 
     return wrapper
-
-
-if __name__ == "__main__":
-    unittest.main()
