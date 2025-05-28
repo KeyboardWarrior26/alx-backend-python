@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import patch
 from parameterized import parameterized
 from client import GithubOrgClient
+from unittest.mock import patch, PropertyMock
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -32,3 +33,29 @@ def test_public_repos_url(self):
         result = client._public_repos_url
 
         self.assertEqual(result, "https://api.github.com/orgs/google/repos")
+
+
+@patch("client.get_json")
+def test_public_repos(self, mock_get_json):
+    """Test that public_repos returns expected list of repo names."""
+    test_payload = [
+        {"name": "repo1"},
+        {"name": "repo2"},
+        {"name": "repo3"},
+    ]
+    mock_get_json.return_value = test_payload
+
+    with patch(
+        "client.GithubOrgClient._public_repos_url",
+        new_callable=PropertyMock
+    ) as mock_repos_url:
+        mock_repos_url.return_value = "https://api.github.com/orgs/google/repos"
+
+        client = GithubOrgClient("google")
+        result = client.public_repos()
+
+        expected = ["repo1", "repo2", "repo3"]
+        self.assertEqual(result, expected)
+
+        mock_repos_url.assert_called_once()
+        mock_get_json.assert_called_once_with("https://api.github.com/orgs/google/repos")
