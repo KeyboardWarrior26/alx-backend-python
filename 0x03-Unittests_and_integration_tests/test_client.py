@@ -4,7 +4,6 @@
 import unittest
 from unittest.mock import patch, MagicMock, PropertyMock
 from parameterized import parameterized, parameterized_class
-
 from client import GithubOrgClient
 
 
@@ -36,8 +35,10 @@ class TestGithubOrgClient(unittest.TestCase):
             }
 
             client = GithubOrgClient("google")
-            self.assertEqual(client._public_repos_url,
-                             "http://test.com/orgs/google/repos")
+            self.assertEqual(
+                client._public_repos_url,
+                "http://test.com/orgs/google/repos"
+            )
 
     @patch('client.get_json')
     def test_public_repos(self, mock_get_json):
@@ -61,31 +62,36 @@ class TestGithubOrgClient(unittest.TestCase):
     ])
     def test_has_license(self, repo, license_key, expected):
         """Test has_license returns correct boolean."""
-        self.assertEqual(GithubOrgClient.has_license(repo, license_key),
-                         expected)
+        self.assertEqual(
+            GithubOrgClient.has_license(repo, license_key),
+            expected
+        )
 
 
-@parameterized_class(('org_payload', 'repos_payload', 'expected_repos', 'apache2_repos'), [
-    (
-        {"repos_url": "http://test.com/orgs/google/repos"},
-        [
-            {"name": "repo1", "license": {"key": "apache-2.0"}},
-            {"name": "repo2", "license": {"key": "mit"}},
-            {"name": "repo3", "license": {"key": "apache-2.0"}}
-        ],
-        ["repo1", "repo2", "repo3"],
-        ["repo1", "repo3"]
-    )
-])
+@parameterized_class(
+    ('org_payload', 'repos_payload', 'expected_repos', 'apache2_repos'), [
+        (
+            {"repos_url": "http://test.com/orgs/google/repos"},
+            [
+                {"name": "repo1", "license": {"key": "apache-2.0"}},
+                {"name": "repo2", "license": {"key": "mit"}},
+                {"name": "repo3", "license": {"key": "apache-2.0"}}
+            ],
+            ["repo1", "repo2", "repo3"],
+            ["repo1", "repo3"]
+        )
+    ]
+)
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration test for GithubOrgClient.public_repos method"""
+
     @classmethod
     def setUpClass(cls):
         """Set up patcher for requests.get"""
         cls.get_patcher = patch('requests.get')
         cls.mock_get = cls.get_patcher.start()
 
-        # Setup mock return values: 2 calls per test (org + repos)
+        # Set up mock return values: 2 calls per test (org + repos)
         cls.mock_get.side_effect = [
             MagicMock(json=lambda: cls.org_payload),
             MagicMock(json=lambda: cls.repos_payload),
@@ -106,8 +112,10 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def test_public_repos_with_license(self):
         """Test public_repos filters by license"""
         client = GithubOrgClient("google")
-        self.assertEqual(client.public_repos(license="apache-2.0"),
-                         self.apache2_repos)
+        self.assertEqual(
+            client.public_repos(license="apache-2.0"),
+            self.apache2_repos
+        )
 
 
 if __name__ == "__main__":
