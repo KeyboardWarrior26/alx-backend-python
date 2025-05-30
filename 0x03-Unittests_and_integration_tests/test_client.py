@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Unit and Integration tests for client.py module."""
 
 import unittest
