@@ -68,20 +68,20 @@ class TestGithubOrgClient(unittest.TestCase):
         )
 
 
-@parameterized_class(
-    ('org_payload', 'repos_payload', 'expected_repos', 'apache2_repos'), [
-        (
-            {"repos_url": "http://test.com/orgs/google/repos"},
-            [
-                {"name": "repo1", "license": {"key": "apache-2.0"}},
-                {"name": "repo2", "license": {"key": "mit"}},
-                {"name": "repo3", "license": {"key": "apache-2.0"}}
-            ],
-            ["repo1", "repo2", "repo3"],
-            ["repo1", "repo3"]
-        )
-    ]
-)
+@parameterized_class([
+    {
+        "org_payload": {
+            "repos_url": "http://test.com/orgs/google/repos"
+        },
+        "repos_payload": [
+            {"name": "repo1", "license": {"key": "apache-2.0"}},
+            {"name": "repo2", "license": {"key": "mit"}},
+            {"name": "repo3", "license": {"key": "apache-2.0"}}
+        ],
+        "expected_repos": ["repo1", "repo2", "repo3"],
+        "apache2_repos": ["repo1", "repo3"]
+    }
+])
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration test for GithubOrgClient.public_repos method"""
 
