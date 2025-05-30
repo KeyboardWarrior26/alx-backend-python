@@ -119,4 +119,5 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    # This ensures unittest detects all parameterized classes
+    unittest.main(verbosity=2)
