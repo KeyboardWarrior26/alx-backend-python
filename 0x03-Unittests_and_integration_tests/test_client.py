@@ -6,6 +6,8 @@ from unittest.mock import patch, MagicMock, PropertyMock
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 
+# Explicit usage of @parameterized_class for test detection
+
 
 class TestGithubOrgClient(unittest.TestCase):
     """Test GithubOrgClient class"""
@@ -119,5 +121,16 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # This ensures unittest detects all parameterized classes
-    unittest.main(verbosity=2)
+    import sys
+    from unittest import TestLoader, TextTestRunner
+
+    loader = TestLoader()
+    suite = loader.loadTestsFromTestCase(TestGithubOrgClient)
+    suite.addTests(
+         loader.loadTestsFromTestCase(TestIntegrationGithubOrgClient)
+    )
+
+    runner = TextTestRunner(verbosity=2)
+    result = runner.run(suite)
+
+    sys.exit(not result.wasSuccessful())
