@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # 3rd-party apps
     'rest_framework',
+    'rest_framework_simplejwt',
 
     # Your apps
     'chats',
@@ -134,7 +135,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 
