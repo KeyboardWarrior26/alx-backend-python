@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     # 3rd-party apps
     'rest_framework',
     'rest_framework_simplejwt',
-    'chats',
+    'messaging_app.chats',
 ]
 
 MIDDLEWARE = [
