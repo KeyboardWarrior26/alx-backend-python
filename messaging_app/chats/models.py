@@ -36,9 +36,3 @@ class Message(models.Model):
     def __str__(self):
         return f"Message from {self.sender.email} at {self.sent_at}"
 
-
-class User(AbstractUser):
-    # Add custom fields here if needed
-
-    def __str__(self):
-        return self.username
