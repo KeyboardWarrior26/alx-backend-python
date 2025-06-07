@@ -7,12 +7,11 @@ class User(AbstractUser):
     user_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
-    password = models.CharField(max_length=128)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -37,3 +36,9 @@ class Message(models.Model):
     def __str__(self):
         return f"Message from {self.sender.email} at {self.sent_at}"
 
+
+class User(AbstractUser):
+    # Add custom fields here if needed
+
+    def __str__(self):
+        return self.username

@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import User, Conversation, Message
 
 class UserSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField()  # ✅ uses SerializerMethodField()
+    full_name = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -11,9 +11,8 @@ class UserSerializer(serializers.ModelSerializer):
     def get_full_name(self, obj):
         return f"{obj.first_name} {obj.last_name}"
 
-
 class MessageSerializer(serializers.ModelSerializer):
-    sender_email = serializers.CharField(source='sender.email', read_only=True)  # ✅ uses CharField
+    sender_email = serializers.CharField(source='sender.email', read_only=True)
 
     class Meta:
         model = Message
@@ -26,15 +25,14 @@ class MessageSerializer(serializers.ModelSerializer):
             'sent_at',
             'created_at'
         ]
-
+        read_only_fields = ['sender', 'conversation', 'sent_at', 'created_at']
 
 class ConversationSerializer(serializers.ModelSerializer):
     participants = UserSerializer(many=True, read_only=True)
     participant_ids = serializers.PrimaryKeyRelatedField(
         many=True, queryset=User.objects.all(), write_only=True
     )
-    messages = MessageSerializer(many=True, read_only=True, source='messages')
-    title = serializers.CharField(write_only=True, required=False)  # ✅ uses CharField
+    messages = MessageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Conversation
@@ -42,7 +40,7 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     def validate_title(self, value):
         if 'badword' in value.lower():
-            raise serializers.ValidationError("Title contains inappropriate content.")  # ✅ uses ValidationError
+            raise serializers.ValidationError("Title contains inappropriate content.")
         return value
 
     def create(self, validated_data):
