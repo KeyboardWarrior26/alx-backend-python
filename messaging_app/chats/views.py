@@ -6,6 +6,7 @@ from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
 from .permissions import IsParticipant
 from .filters import MessageFilter
+from rest_framework.status import HTTP_403_FORBIDDEN
 
 class ConversationViewSet(viewsets.ModelViewSet):
     queryset = Conversation.objects.all()
@@ -34,3 +35,5 @@ class MessageViewSet(viewsets.ModelViewSet):
         # Pass sender and conversation explicitly to serializer.save()
         serializer.save(sender=self.request.user, conversation_id=conversation_id)
 
+if request.user != message.sender:
+    return Response({'detail': 'Forbidden'}, status=HTTP_403_FORBIDDEN)

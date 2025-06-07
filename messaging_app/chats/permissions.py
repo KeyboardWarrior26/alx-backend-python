@@ -24,6 +24,19 @@ class IsParticipant(BasePermission):
         return False
 
 
-class IsParticipant(permissions.BasePermission):
+from rest_framework import permissions
+
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Custom permission to only allow owners of an object to edit or delete it.
+    """
+
     def has_object_permission(self, request, view, obj):
-        return request.user in obj.participants.all()
+        # SAFE_METHODS: GET, HEAD, OPTIONS
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Allow only the owner to PUT, PATCH, DELETE
+        return obj.sender == request.user
+
