@@ -1,0 +1,6 @@
+[2025-06-07 14:12:30] "POST /api/token/ HTTP/1.1" 200 OK
+[2025-06-07 14:13:01] "GET /api/conversations/ HTTP/1.1" 200 OK
+[2025-06-07 14:14:12] "POST /api/conversations/ HTTP/1.1" 201 Created
+[2025-06-07 14:15:45] "POST /api/conversations/3/messages/ HTTP/1.1" 400 Bad Request
+[2025-06-07 14:16:22] "PATCH /api/messages/5/ HTTP/1.1" 403 Forbidden
+[2025-06-07 14:17:03] "DELETE /api/messages/7/ HTTP/1.1" 204 No Content
