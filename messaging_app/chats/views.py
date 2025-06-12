@@ -32,8 +32,11 @@ class MessageViewSet(viewsets.ModelViewSet):
         conversation_id = self.kwargs.get('conversation_id')
         if not conversation_id:
             raise NotFound("Conversation ID is required in the URL.")
-        # Pass sender and conversation explicitly to serializer.save()
         serializer.save(sender=self.request.user, conversation_id=conversation_id)
 
-if request.user != message.sender:
-    return Response({'detail': 'Forbidden'}, status=HTTP_403_FORBIDDEN)
+    def destroy(self, request, *args, **kwargs):
+        message = self.get_object()
+        if request.user != message.sender:
+            return Response({'detail': 'Forbidden'}, status=HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
+
