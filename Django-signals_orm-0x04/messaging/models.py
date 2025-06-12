@@ -9,6 +9,7 @@ class Message(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     
     # REQUIRED by ALX
+    edited = models.BooleanField(default=False)
     edited_at = models.DateTimeField(null=True, blank=True)
     edited_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
