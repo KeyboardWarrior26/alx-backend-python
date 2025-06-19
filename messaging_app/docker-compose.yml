@@ -1,33 +1,28 @@
-# messaging_app/docker-compose.yml
-
 services:
   db:
     image: mysql:8.0
+    container_name: db
     restart: always
-    env_file:
-      - .env
     environment:
-      MYSQL_DATABASE: ${MYSQL_DB}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: alxuser
+      MYSQL_PASSWORD: alxpass
+      MYSQL_DB: messaging  # <-- Fix here: MYSQL_DB instead of MYSQL_DATABASE
     volumes:
-      - mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+      - db_data:/var/lib/mysql
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    container_name: web
+    restart: always
+    command: python3 manage.py runserver 0.0.0.0:8000  # <-- Fix here
     volumes:
       - .:/app
     ports:
       - "8000:8000"
     depends_on:
       - db
-    env_file:
-      - .env
 
 volumes:
-  mysql_data:
+  db_data:
 
