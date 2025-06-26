@@ -1,0 +1,4 @@
+__pycache__/
+venv/
+*.pyc
+__pycache__/\n*.py[cod]\nvenv/\n.venv/\n.pytest_cache/\n.coverage\n.DS_Store

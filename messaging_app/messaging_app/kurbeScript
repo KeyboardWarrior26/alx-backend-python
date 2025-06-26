@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# kurbeScript - Starts Kubernetes with Minikube and verifies cluster health
+
+# Exit on any error
+set -e
+
+# Step 1: Check if Minikube is installed
+if ! command -v minikube &> /dev/null
+then
+    echo "❌ Minikube is not installed. Please install it and try again."
+    exit 1
+fi
+
+# Step 2: Start the Minikube cluster
+echo "🚀 Starting Minikube cluster..."
+minikube start
+
+# Step 3: Verify that the cluster is running
+echo "✅ Verifying cluster info..."
+kubectl cluster-info
+
+# Step 4: Retrieve all running pods in all namespaces
+echo "📦 Retrieving pods..."
+kubectl get pods --all-namespaces
