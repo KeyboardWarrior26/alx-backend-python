@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+
+    tools {
+        python 'Python 3'  // Make sure to configure this in Global Tools
+    }
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git credentialsId: 'your-credential-id', url: 'https://github.com/KeyboardWarrior26/alx-backend-python.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    python3 -m venv venv
+                    source venv/bin/activate
+                    pip install --upgrade pip
+                    pip install -r messaging_app/requirements.txt
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh '''
+                    source venv/bin/activate
+                    pytest messaging_app/tests --junitxml=report.xml
+                '''
+            }
+        }
+
+        stage('Archive Results') {
+            steps {
+                junit 'report.xml'
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
