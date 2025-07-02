@@ -2,37 +2,34 @@ name: Django CI
 
 on:
   push:
-    paths:
-      - 'messaging_app/**'
+    branches: [ main ]
   pull_request:
-    paths:
-      - 'messaging_app/**'
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mysql:8.0
+        image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: rootpass
           MYSQL_DATABASE: messaging
           MYSQL_USER: alxuser
           MYSQL_PASSWORD: password123
+          MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
 
     env:
       MYSQL_DATABASE: messaging
       MYSQL_USER: alxuser
       MYSQL_PASSWORD: password123
       MYSQL_HOST: 127.0.0.1
-      MYSQL_PORT: 3306
 
     steps:
       - name: Checkout code
@@ -45,15 +42,32 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install -r messaging_app/requirements.txt
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run Django tests
+      - name: Wait for MySQL to be ready
         run: |
-          source venv/bin/activate
-          cd messaging_app
+          until mysqladmin ping -h 127.0.0.1 -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" --silent; do
+            echo "Waiting for MySQL..."
+            sleep 3
+          done
+
+      - name: Run Django Migrations
+        run: |
           python manage.py migrate
-          python manage.py test
+
+      - name: Run Tests and Generate Coverage Report
+        run: |
+          coverage run manage.py test
+          coverage xml
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+      - name: Run flake8 for linting
+        run: |
+          flake8 .
 
