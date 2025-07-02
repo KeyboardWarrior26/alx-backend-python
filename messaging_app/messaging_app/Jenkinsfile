@@ -1,13 +1,14 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Clone Repo') {
-            steps {
-                git branch: 'main',
-                    git credentialsId: '40b1d2f3-0de0-4ada-b980-70f66ec62084', url: 'https://github.com/KeyboardWarrior26/alx-backend-python.git'
-            }
+    stage('Clone Repo') {
+        steps {
+            git branch: 'main',
+                credentialsId: '40b1d2f3-0de0-4ada-b980-70f66ec62084',
+                url: 'https://github.com/KeyboardWarrior26/alx-backend-python.git'
         }
+    }
+
 
         stage('Install Dependencies') {
             steps {
